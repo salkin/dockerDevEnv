@@ -1,7 +1,15 @@
 #!/usr/bin/env ruby
 
 module Script                                                                                                                                                 
+PROXY_SETUP = <<-SHELL 
+PROXY=$1
+mkdir -p /etc/systemd/system/docker.service.d/
+echo '[Service]' > /etc/systemd/system/docker.service.d/http-proxy.conf
+echo "Environment=\"HTTP_PROXY=http://$PROXY\" \"HTTPS_PROXY=$PROXY\" \"NO_PROXY=localhost,127.0.0.0/8\"" >> /etc/systemd/system/docker.service.d/http-proxy.conf
 
+systemctl daemon-reload
+systemctl restart docker
+SHELL
 
 BOOTSTRAP = <<-SHELL
 CLUSTER_IP=$1

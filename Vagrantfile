@@ -2,12 +2,9 @@
 # vi: set ft=ruby :
 require_relative "scripts"
 
+#Set your proxy endpoint if behind proxy
 $PROXY = "http://10.144.1.10:8080"
 
-# All Vagrant configuration is done below. The "2" in Vagrant.configure
-# configures the configuration version (we support older styles for
-# backwards compatibility). Please don't change it unless you know what
-# you're doing.
 Vagrant.configure(2) do |config|
   config.vm.box = "opensuse/openSUSE-Tumbleweed-x86_64"
   config.proxy.http = $PROXY
@@ -20,6 +17,12 @@ Vagrant.configure(2) do |config|
     inner.vm.provision "shell" do |s| 
       s.inline =  Script::BOOTSTRAP
       s.args = "192.168.50.100 192.168.50.100"
+    end
+    if $PROXY.length > 0
+      inner.vm.provision "shell" do |s|
+        s.inline = Script::PROXY_SETUP
+        s.args = $PROXY
+      end
     end
     inner.vm.provision "shell" do |s| 
       s.inline =  Script::MASTER_SETUP
@@ -45,11 +48,18 @@ Vagrant.configure(2) do |config|
       s.args = "192.168.50.100", opts[:ip]
     end
     
+    if $PROXY.length > 0
+      inner.vm.provision "shell" do |s|
+        s.inline = Script::PROXY_SETUP
+        s.args = $PROXY
+      end
+    end
+
     inner.vm.provision "shell" do |s| 
       s.inline =  Script::NODE_SETUP
       s.args = "192.168.50.100"
     end
-
+    
       inner.vm.hostname = opts[:name]
         config.vm.network "private_network", ip: opts[:ip]  
     end
