@@ -7,7 +7,13 @@ BOOTSTRAP = <<-SHELL
 CLUSTER_IP=$1
 OWN_IP=$2
 zypper -n in docker git net-tools-deprecated
-git clone https://github.com/salkin/dockerDevEnv.git
+if [ -d dockerDevEnv ]; then
+  cd dockerDevEnv
+  git pull
+  cd -
+else
+  git clone https://github.com/salkin/dockerDevEnv.git
+fi
 
 echo $OWN_IP
   
