@@ -3,12 +3,14 @@
 require_relative "scripts"
 
 #Set your proxy endpoint if behind proxy
-$PROXY = "http://10.144.1.10:8080"
+$PROXY = "" #"http://10.144.1.10:8080"
 
 Vagrant.configure(2) do |config|
   config.vm.box = "opensuse/openSUSE-Tumbleweed-x86_64"
-  config.proxy.http = $PROXY
-  config.proxy.https = $PROXY
+  if $PROXY.length > 0
+    config.proxy.http = $PROXY
+    config.proxy.https = $PROXY
+  end
   config.vm.define "master" do |inner|
     inner.vm.provision "shell" do |s|
       s.inline = Script::CONSUL
