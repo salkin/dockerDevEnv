@@ -32,7 +32,7 @@ DOCKER_OPTS="-H tcp://0.0.0.0:2375 --cluster-store=consul://${CLUSTER_IP}:8500 -
 EOF
 
 systemctl enable docker
-
+systemctl start docker
 SHELL
 
 
